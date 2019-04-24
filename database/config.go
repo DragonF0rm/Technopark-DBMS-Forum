@@ -1,3 +1,4 @@
+
 package database
 
 import (
@@ -6,9 +7,9 @@ import (
 	"time"
 )
 
-var connConfig = pgx.ConnConfig {
+var ConnConfig = pgx.ConnConfig {
 	Host: "localhost",
-	Port: 5001,
+	Port: 5432,
 	Database: "forum",
 	User: "maxim",
 	Password: "starwars",
@@ -25,8 +26,8 @@ var connConfig = pgx.ConnConfig {
 }
 
 var poolConfig = pgx.ConnPoolConfig {
-	ConnConfig:     connConfig,
-	MaxConnections: 10,
+	ConnConfig:     ConnConfig,
+	MaxConnections: 20,
 	AfterConnect:   afterConnect,
 	AcquireTimeout: 5 * time.Second,
 }

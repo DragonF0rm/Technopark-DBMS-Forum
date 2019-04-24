@@ -1,18 +1,11 @@
 package responses
 
-import (
-	"encoding/json"
-)
-
 type Forum struct {
-	PostsCount   uint64 `json:"posts"`
+	PostsCount   int64 `json:"posts"`
 	ForumSlug    string `json:"slug"`
-	ThreadsCount uint32 `json:"threads"`
+	ThreadsCount int32 `json:"threads"`
 	ForumTitle   string `json:"title"`
-	UserSlug     string `json:"user"`
-}
-
-func (forum *Forum)MarshalToJSON()([]byte, error) {
-	return json.Marshal(forum)
+	UserNickname string `json:"user"`
+	IsNew        bool   `json:"-"`
 }
 
