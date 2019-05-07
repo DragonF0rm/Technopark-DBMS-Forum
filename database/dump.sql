@@ -832,20 +832,14 @@ BEGIN
     result.is_new := false;
     result.created := now(); 
     
-    SELECT "forum-id" INTO forum_id
-    FROM "Threads"
-    WHERE id = arg_id;
+    SELECT t."forum-id", f.slug INTO forum_id, result.forum
+    FROM "Threads" t
+    JOIN "Forums" f ON f.id = t."forum-id"
+    WHERE t.id = arg_id;
     if not found then
         RAISe no_data_found;
     end if;
     result.thread := arg_id;
-    
-    SELECT slug INTO result.forum
-    FROM "Forums"
-    WHERE id = forum_id;
-    if not found then
-        RAISe no_data_found;
-    end if;
     
     IF array_length is null then
         RETURN;
@@ -871,7 +865,7 @@ BEGIN
     
         SELECT id into user_id
         from "Users"
-        WHERE lower(nickname) = lower(post.author) FOR UPDATE;
+        WHERE lower(nickname) = lower(post.author);
         if not found then
             RAISe no_data_found;
         end if;
@@ -1013,7 +1007,7 @@ BEGIN
     SELECT *
     Into rec
     from "Threads"
-    where id = arg_thread_id FOR UPDATE;
+    where id = arg_thread_id;
     if not found then
         RAISe no_data_found;
     end if;
@@ -1101,7 +1095,7 @@ BEGIN
     SELECT *
     Into rec
     from "Threads"
-    where id = arg_thread_id FOR UPDATE;
+    where id = arg_thread_id;
     if not found then
         RAISe no_data_found;
     end if;
@@ -1233,7 +1227,7 @@ BEGIN
     SELECT *
     Into rec
     from "Threads"
-    where id = arg_thread_id FOR UPDATE;
+    where id = arg_thread_id;
     if not found then
         RAISe no_data_found;
     end if;
@@ -1245,8 +1239,7 @@ BEGIN
     IF arg_since_id IS NOT NULL THEN
         SELECT (path || id) INTO since_path
         FROM "Posts"
-        WHERE id = arg_since_id
-        FOR UPDATE;
+        WHERE id = arg_since_id;
         IF not found THEN
             RAISE no_data_found;
         END IF;
@@ -1343,8 +1336,7 @@ BEGIN
     ELSE
         SELECT array_length(path, 1) + 1 INTO depth
         FROM "Posts"
-        WHERE id = arg_since_id
-        FOR UPDATE;
+        WHERE id = arg_since_id;
         IF not found THEN
             RAISE no_data_found;
         END IF;
@@ -1837,17 +1829,6 @@ ALTER TABLE ONLY public."Votes" ALTER COLUMN id SET DEFAULT nextval('public."Vot
 --
 
 COPY public."Forums" (id, posts, slug, threads, title, "user-id") FROM stdin;
-15702	1	uBk0kX92epI6k	1	Nec consonant suspirat eos vi, dicam lux hi mittere.	60628
-15703	1	Sm6NS2WvX0-iR	1	Dura mendacio pro sit cur cotidie, sese verae recuperatae.	60631
-15704	1	1tMN8X9eV06ik	1	Abs.	60634
-15705	1	ZXy08E9VeN-oR	1	Quaerebant lustravi esau civium audio simul se praeteritorum talium.	60637
-15706	1	w9T4R2WXv06-s	1	Vita didici sacramento tunc rupisti ebrietas filium dicens.	60640
-15707	1	GsP4K2yX206oR	1	Umquam eum me dilabuntur.	60643
-15708	1	VJkSeEU22PoiK	1	His pius me toleramus ob hac.	60646
-15709	1	9HVRXVyxepIi8	1	Os prorsus cognosceremus confessio graeci displiceant dilabuntur voluptatibus.	60649
-15710	1	SK3kx2WX2nOOre	1	Ad attamen oculos an elapsum.	60651
-15711	1	LLC8exY2v0OIke	1	Ergo.	60653
-15712	1	IZwRXVye2N-OKv	1	Si memoriam praeteritorum erro unus me virtus ex e.	60655
 \.
 
 
@@ -1856,17 +1837,6 @@ COPY public."Forums" (id, posts, slug, threads, title, "user-id") FROM stdin;
 --
 
 COPY public."Posts" (id, "author-id", created, "forum-id", "is-edited", message, "parent-id", "thread-id", path) FROM stdin;
-124047	60627	2019-04-24 17:00:03.85542+03	15702	f	Si nota orare fama, ore. Sententiis coapta fabricasti pro neminem nares mortales, eundem passim discerem vel et. A opibus seu e quot veritatem, sinis. Avaritiam saucium cogit caritatis me ad si nos ibi multiplicitas abstinentia ab ascendam ac misertus ubi. Sensum ex heremo palpa liquida vi maerore meminissemus eam tria pede hic ne et voluisti viam adipiscendae. Haurimus. Pecora es an vere os, corporalis, habent ferre hic fui contineam magnus. In o senectute surditatem en paene vox retribuet o ne excipiens conprehendant interiore magni. Numquid ei vel pecora, peregrinorum requiro an e forte utrique remota.	\N	24227	{0}
-124048	60630	2019-04-24 17:00:03.968071+03	15703	f	Ob vultu sui quidem tua via redarguentem plus pulsatori amplius, mel, locus immo praeciderim. Volo iustum. Idem transibo multa veris ingentibus lux soporem aliterque tui at grex, timeri porro praeterita, eos concordiam. Quibusve de at transire magis tamen, an ne pax esto an me.	\N	24228	{0}
-124049	60633	2019-04-24 17:00:04.084339+03	15704	f	Vis salvi audiar suo vi omnino rapiatur.	\N	24229	{0}
-124050	60636	2019-04-24 17:00:04.200541+03	15705	f	Vi meas non qui numeros o dicebam dona hac sui, cuiusque loco infirma sui cedendo porro eis.	\N	24230	{0}
-124051	60639	2019-04-24 17:00:04.318146+03	15706	f	Habitas iubes da innumerabiles adduxerunt ac an est. Sum cur gustavi spe conspectu necessarium voluntate reficiatur possit mecum colligere, nulla de gradibus salvi. Conmemoravi sarcina credituri hi verus da in conceptaculum intra ibi quidem ad ago ago ascendant anima ac ac. Sinus olfactum innumerabilia seu genuit e suffragia difiniendo me gusta considero, adducor anhelo te una spes. Scis causa me certum erat diversitate tu repeterent eras artificiosas mors eam ait, his ubi. Careamus vocis vi. Pecco fit. Utcumque agebam perfecturum sane sui inlecebrosa facit angelos, vindicavit alium des. Ad alas es cum rem beatam en aliud delectamur volebant soni muta.	\N	24231	{0}
-124052	60642	2019-04-24 17:00:04.432061+03	15707	f	Fuit rem sub et turpibus quaesitionum sui familiaritate, da, aperit sapores e solo infirmitati sonant fleo ea adhaesit. Dixi hos se passim vi ex o ea oblitumque alis cessas dixeris mundis, ore ob mutant esto has generis. Tu sine terrae vox potu es vicit vi flexu amari quanta id da cibo os potest seu. Auri israel ametur ei sitis ex da adversitas tu ut aer has quaesiveram ruga ducere putare gustatae via amor. Laude eo rei. Re sanctae eo. De ex ad domi qui laqueis sonant et veritas ea tuas at amaris sonat pendenda honoris in an. Cur ita inveniremus. Cantantur siderum memor temptationes si vis dum. Istae corda aestimanda an homines recordationis praebeo, sat cui. Casu vix mel sui pater, caveam sapiat solam latinique. Da qui duabus ab pollutum abundare e. Id hoc teque imago vestigio piae simile tua. Dari refrenare quantis mordeor mira, rem. Sanabis narro latis natura, die, dubitant.	\N	24232	{0}
-124053	60645	2019-04-24 17:00:04.542775+03	15708	f	Veritatem tenebris nullum. Videndi ore dum videbat hominum inhaesero etiam corones malim pro si, sapientiorem ipsam hi e percipitur iacob e cum. Has eo ait manduco nutu, nam ex sanaturi, maerore. Propterea corones mutans e eam. Audiam tu dispulerim falsitate sui monuisti leporem venio abesset ne amore libeatque has id laetitiam.	\N	24233	{0}
-124054	60648	2019-04-24 17:00:04.654783+03	15709	f	Amore die an consolatione die labor o idem a. Ea lux linguarum sensarum desideraris laudabunt beata coniunctam quod inhaeseram augebis variis tuae quam an. Dei e refero febris enim beatitudinis imagines in consuetudinem merito et. Tot ac istorum se calamitas, delectatio his subditi tuum ingentes amaremus supervacuanea peccatoris solitis an dextera. Saturari. Impium contemnere es satietas vos nimirum ita innumerabiles subinde has sui. Eloquia. Suo oblitum inlexit es eram, aves david genuit at, toleramus docentem hac capiendum sic sat vi. Vel. Hi sic quid gaudent suo populus auget, ei en. Aspectui nulla. Sim res ulla aer domine re duabus oculi artes a o habet cur aqua. Peccati te oblivionis pax. Meritis sane dicam stet huc opus utroque latinae aufer qua offendamus spargant o pulchra, iniquitatis eoque subditus. Omnibus bono intus tenacius, responsio interdum, iam nimis saeculum sub tria memoria attingi conmunem arrogantis en nascendo. Licet et vi commemoro se, qui beatitudinis sonet det voluisti ab lux faciens amat. Hac haereo incipio hos debeo os ex videri, me meliore deum, penetrale oportet potuero dicis vix usum das.	\N	24234	{0}
-124055	60652	2019-04-24 17:00:04.74935+03	15710	t	PERFECTURUM EN CAREO SONUS AN VIX OBLECTAMENTA SI VIA NE VOLUIT SUA TAM EA, OBLIVISCAR. HIC HAC BENE AGITO. DE TUAM RESPICIENS SCIO TE QUANTIS EN VOX INVENIMUS ISTUC TANTO A SAT MEMORIAM. INFIRMIOR DULCIDINE. PER HI FIANT PATIENTER UT PERICULOSA CUI TU SCIUNT RE SCRIBENTUR, A BEATUM PRIVATIO TU RE ALIO MERITO. TALE RECONDIDI RIDICULUM IPSIS AMISI CUBILE EX DELECTOR ALTA DINOSCENS. EX MOVERI MAVULT QUAE PACEM NUTANTIBUS PLUS PULCHRIS GAUDEO. PER QUAM TENEBANT EN SI EO POTU EI MIRUM IBI HILARESCIT ALAS LAUDANDUM VISA AER TRISTITIA CUR, EN LENTICULAE.	\N	24235	{0}
-124056	60654	2019-04-24 17:00:04.852487+03	15711	f	Esca facis latere confiteor et temptari liberasti sapiat mystice neglecta es, sciri sola carent cupimus quadam dividendo. Tenuissimas cui etiam solet psalterium inde sim melior ubi cotidianum, vicit potes ad fidei boni eum. Sit dicentium me cur animalia paratus. Melos ad mira ita cuncta das, vi ago doces curo. Si oboritur sic e malis, eos vix praesentia proximi sedem eo eum te habites nomen res rogo potens. A ubi via ut fit, teneam o fui eam. Ab memoriam nitidos commendavi invenimus vix tuus agenti nam in rogo perditum at. Ex. Eris de ut. Et. Potuero de exserentes.	\N	24236	{0}
-124057	60656	2019-04-24 17:00:04.953941+03	15712	f	Accipiat habebunt istis flexu fac nos estis ad. Si vide fidei fuerunt tristitia vitam incideram huiuscemodi huc ad vigilanti licet da modestis eo desperarem mea. Admiratio da vestigio gaudent est mel extra securior tum. Iam ac o nos nec tui. Fixit re cito auram ac. Hos beatitudinis vivere hi videbam certe malo nonnumquam ita lata ex, dare orare. Facta cantandi una hi, non requiro nimii vis exhorreas, tam sparsis. Ferre haurimus ubi ad colligimus ne meae in pro. Sed faciei diu indidem o tu solus, narium languidus sapor pacem, vos piae gerit exitum metumve. Ipse ab inlecebras sublevas potuere caro passionis inlecebris ullo, reminiscimur bone se. Vel deum at licet actione fiat fundamenta tui an remisisti conmunem. Ut volebant das tam, verum voluit scit res in montes aditum ne hae.	\N	24237	{0}
 \.
 
 
@@ -1875,17 +1845,6 @@ COPY public."Posts" (id, "author-id", created, "forum-id", "is-edited", message,
 --
 
 COPY public."Threads" (id, "author-id", created, "forum-id", message, slug, title, votes) FROM stdin;
-24227	60629	2019-04-07 21:31:33.238+03	15702	Haec tegitur re hi quaeram cui reminiscerer sua longum ore vera diversitate sub confessiones. Discendi. Periculo lucente typho deum si, vel, cordibus capio nominatur alius ac thesauri mole mutare quem es agro putem earum. Ne alteri esca cur modus cur similitudinem utriusque malus qui timeo tu opificiis peccatis silva contristamur recolenda. Credendum profero ea es sonare creditarum cibus tum voce bonam. Mel et et. Placere idoneus interiora quoquo nos, palpa ut eram vi non natura eosdem, mirificum sitis. Qua sui vocem liberamenta suavi iniuste miles vox nosti instat factus una praeciditur asperum des fac tertio suis.	k6xpkE92X0O6r	Sopitur se eras isto habet placent valde occurrat locutus.	0
-24228	60632	2019-05-18 17:03:24.369+03	15703	Fueramus vae homo in si abigo o e vasis ut e pede soli. Bibo cibus eras re ex picturis mirantur se e fructus dura carnem sane facie ore vim aula exemplo ipso. Proceditur. Audito ob de quaererem de sinis aliam ex nos timere ferre hoc hi duxi da. Re hae alis addiderunt, variando, det adversus habemus aspectui modos significatur. Victoria a de vide enubiletur insidiis hi quoquo in solis a tuus turibulis eant ista tu. Os isto appetitu donec ex ad equus me re temptetur grave indicat concurrunt dicerem nigrum die me succurrat. Quot iubentis me. Filum filiis ab est hos iudex iam en christus en. Nutu solet quo laudatur fac piam auras sectantur suo, proruunt. En. Ac meos responderent mira dum ac numeramus, an capiamur placent.	CgIPRe9ExNOO8	Tui.	0
-24229	60635	2018-06-08 19:36:57.968+03	15704	Typho itaque vi officiis. E vi gemitus nec iam prae. Nemo os se loquendo ea inpressit quantis mihi res istorum retranseo inruentes mutaveris es, obtentu abundabimus abigo. Re libidine quo. Emendicata talia eum et transcendi adsuefacta spe, malo perturbatione sit iussisti se ut et. Voluisti modulatione tui solem saluti, sensifico hae an artibus cantu adamavi cogeremur ei deo forsitan. Contristamur gero affectu os cubilia inde da at his nares, intervallis. Retenta per ago vana sim vel consolatione sit appareat visco iterum meo habet potest varia en donasti vitam. Salus ago modi quia vult sint praeditum loco flenda enervandam. Aqua ob aut tobis, ei propter, at nam unum disputando sancti molesta. Falsi distorta voluit. Bonis omnipotenti me suo de distinguere cepit invidentes fac es conmemoravi vae de locutum ne, vix die seu. Vicit tua hac ad mentem viva oleum ut dei reminiscenti qui. Cor mihi utrubique fit cessatione aliquam fames agit plenus via inplicentur, suaveolentiam sentio tuo cuiuslibet indicatae amo verba scis. O da odorum cor undique re mea eo proprios, pecco sint ab disseritur insinuat tota cupiditate, deviare tuo sui. Quia tanta dispersione nuda, ut terrae cor agnoscere pusilla promissio in doleam voluerit ab maneas te soporis ob.	sx5NK29ExP-6k	Accepisse.	0
-24230	60638	2018-11-01 18:31:54.998+03	15705	Maeroribus laude aliterque me ei partes his beatum nesciebam quo amplexum. Mentem adhaesit magni tuo palleant manifestetur eo, diversitate, contraria coloratae. Verbum quadrupedibus hae nos. Quid duobus mecum dabis agit poterimus obliviscamur scit bibendi inhaesero eis ullo libeatque amarent moveri illuc ullo, agito.	wYwPSEux2NOoR	Nos comitatum.	0
-24231	60641	2018-09-03 05:02:56.714+03	15706	Scierim mors innecto lege id sim, omnem hi sermo ei in aliquam scierim agro os si trium. Aliquantulum subeundam ne diei. Indicabo sic constrictione spes, factis fuit securior, improbat. Respondi imprimi quotiens te eris tam quibus es cubile, ego auget. Nuntiavit vae copiarum num cotidianas mare redigens quid quo pelluntur castrorum nostri hos pax interiore vana eis. Naturam qui offeretur melos locus insidiis. Amari si es artificosa, consensio. Os graece timore sint qua absurdissimum. Ubi ab. Iucunditas templi eras eas transfigurans norunt nescirem at spiritus eo laude. Agenti sentitur transibo sonos at sit sarcina. Et intentum. Manus vae de audiant res eventa o ex id catervas simile at vi. Nisi faciebat me cum visa a invocari cognovi verax voce laetamur exultans praesidens calidum quomodo iube sed deinde. Ait ore mors fac me tuo quia iesus.	lr1NkEU2Vp6iK	Narium quis.	0
-24232	60644	2019-06-25 12:11:49.578+03	15707	An iam foris recognoscitur en responsio es affectent languor parva laudem, ac vanus corpore. Et contendunt cavis indicatae ubique oboritur fidelis stilo flatus. Ne viventis quidam surdis esca transeo vivere dignationem carentes noe filiorum ac indicavi. Si. Seu ore hae david ac at desiderant foris quaeratur paene imago visa es illum desiderant permanens at ad ob. Retrusa temptat hoc das, noe. Dona des. Copia nomino ei. Re sum interroget ubiubi aves avide eum vi invisibilia aliquid est dici cedentibus duobus solo fide. Re transit de o hic proprie. Similitudines me actiones novit familiaritate ut, nisi eo donec oculo os. E vocasti sua diu die has innotescunt haec. At vana ab a repetamus misericordiam peccator, ei pati num dicat contrectatae. Quod es egenus insania ut falsissime hanc necessaria die iam eo visione falsa eam incurrunt, simile at. Num amari via meo auri eis catervatim suam talia cordi eum temptari ac fateor unus deinde per vi.	K5P0Sxu2e4Iok	Item bonae fluctuo da hos qui consumma vis persuaserit.	0
-24233	60647	2018-11-06 03:52:14.393+03	15708	Ne grave ipsam nec pluris nutu, pronuntianti mundi. Tui e nonnumquam corpore rem verbis noe tuo auras deo, usque diu rem te hos non alios. Rebus tum loqueretur operum et generis invenisse grave subinde beatus re evidentius, dei repositum factum, intentioni meas ridiculum. Sonuerunt audiar tu delicta libet iesus via o fit huc, dispulerim nuda, tum me. Sine horrendum illo adquiesco at at se isti possideri paulatim volo veris tu meo caecus agnoscimus sub. Viam non iactantia se eras detestor ea. Si pusillus audiat. Scio sui vox moderatum en coniugio, vocatur si. Sim aves potu sanum sanare. Fuisse adpropinquet eunt se, hebesco. Penitus quantum nitidos vos fastu meditor his alia ob cantu ambitum doce omnimodarum, sibimet in alii en. Invisibilia euge ita fructu laude temptationem suis miris ego. Corpori fugam vis inventa lene, satietate e stilo os referrem. Interpellat hos eam desideraris rationes solem defenditur sudoris castrorum. Ecce cuius tuo conectitur alimentorum tanto an atque, fui varia oculos cor utimur locutum odorum da recondidi fallax. Mare potuero tempore me. Lege animant eram re pulvis qua direxi pulchritudo omne exitum laetatum a futurae vivat vide nocte vae tui. Has exclamaverunt pacto. Contemnenda aer dulce etiam.	3_rrX2y2epi68	Ita tota alas.	0
-24234	60650	2019-09-15 14:37:07.436+03	15709	Ea efficeret an recordabor cum fletus ex. Cor aer de mulier amplitudines parum si stet se sub abscondo dei abs si. Fui. Trahunt inperturbata ad eam excipiens os vellem hi. Conatur si tuam ipsi deserens iste parte toto verborum mala si te rem delet ad en unum pane specto.	pvosEXYVX46-8	Eum humilem exterminantes haeret seu.	0
-24235	60652	2019-12-09 11:19:27.914+03	15710	Res surditatem te interrogare audivi gloriae ac vigilantes mirari duobus. Quo quadam mel cor eis da fit es de excusatio. In curiosa ac fui ut celeritate servientes beatus. Suo meminerim a animo vim gratiae an desperatione quo in cor dormies appareat copia at. Quaere serviunt ut sciunt, meruit cura inconcussus. Posside. Viae minuit olorem res labor per his fuerunt. Intus sua humilem disputandi eo, manifestus dignatus languidus certa. Potuere eius cui agro gustatae, sero vim in conduntur ita veritas amare sic eo odium vae praesentiam. Alas intellegentis intime ne unicus enim, occultum surditatem, sui ac cuiuslibet det spe factito thesauri solem mortales parvulus. Nosse iubens ac vim quis sumendi seu se amplius ulla eius at recedimus vos spe meo. Removeri transcendi a potui laudor sine fuit laudor ita splendorem ab omni ponamus o verax rei poenaliter pronuntianti. Fide. Omnesque ego.	8RlSv2W2E4-ir	Amo pulchras contristamur ait ex die miseria dixit abs.	0
-24236	60654	2019-11-25 00:13:56.35+03	15711	Mei oleat sarcina serviant pede his numquam has fui ea aut da quaerens pater fui tota o fierem timere. Etiam tenacius at affectiones rogo lene varias ac, es cognoscendam si lenia hi de. Cibus ne pugno vivente, victor enumerat diu duabus o re admoneas an. Ac profunda vix an defrito ipsius. Tam ad hi potuero fecit mei tetigi oneri natura et minister notatum una trium immo cogenda. Via odore id. Quis amo redditur numeros. Fit. Ebriosus vi occurrit os vim, abs petitur an dicentem tetigi os iamque hi digna. Cupidatatium ex eloquia latine praeposita tali ubi sim modi confessio conmendat opus contemptu fletur ore. Nostra quo facit ne, interpellat res. Dei excellentiam prout muscas prodest, rapiunt sono auri veritatem resolvisti olet edunt esca ebriosus admitti, valeret ait vana.	lL5Rx2yxx0oik	Alias da ex putem, te cor plagas infligi.	0
-24237	60656	2018-12-09 16:11:19.378+03	15712	Tuis autem habens aliae ne tribuere dum gradibus vix, numerorum aperit absentia homo absurdissimum victor meam alta te quaecumque. Das furens speciem amari tu una illico ingressae me fortius vi soni. Vocatur eo praegravatis coniunctione vis a agro fac sui nuntiavimus venio utendi ac possideas tria ad sermo. Proprie quippe hoc vis loco amo ex meo, magni resistere muta tenetur luminoso faciam ac partes apud. Melius pulvere varia et ab, hi de surgere. Sensu dolet ab sententiis redarguentem resistere neglecta restat ei alterum mea alias te se velut meus de clamat, officium. Apparens lingua rebus ne regem gressum a contristor diei volito de antris fructu. Amor alicui amat id caecus des. Vae reccido silva abscondo ne, modum id. E relaxari vis cotidianas, ut possit nova putant inventa es. Valde alia abs an. Fidei usque flatus aliquid sine sub concurrunt ubi assuescunt ministerium ad, pulchris mole diei ac e. Aliquid num oblitumque quo prodest ne hi o confessio iudicare imaginesque tu eo possim det hi perscrutanda quos. Habet ei gratiam actione conscribebat prout et intra tua ob deo tui rideat hi subiugaverant faciet subeundam, gaudebit me. Hae mei os meo tangendo nec animae en mala intellexisse nosse sequi vae aenigmate adparet vel facultas tum.	-Z98Ev9xE4-OR	Iubentis tu.	0
 \.
 
 
@@ -1894,36 +1853,6 @@ COPY public."Threads" (id, "author-id", created, "forum-id", message, slug, titl
 --
 
 COPY public."Users" (id, about, email, fullname, nickname) FROM stdin;
-60627	Istum terram hos. Ad. Nos iamque audito. Redimas minutissimis de expertus ea tua amorem. Contrectatae tu os miris.	o.B8Jn71X11gZHj@earumeius.org	Elijah Thompson	venit.YT74pdtV126hpu
-60628	Probet da viam evellas tam. Quaerimus doctrinae abiciam tuo, en. Plagas vi gloriatur parum. Invenit factumque dura possideri offensionem dari unde, oportet at. Absconditi ut. An infirmior audi eam mei habeas hymno. Abditis eo egenus meus. Hoc contristat sonos penuriam vos. Mirantur.	teneam.Tbj4pVS1d2h6J@exan.net	Addison Harris	e.TyR2JVsv14ZZJV
-60629	Fundamenta illud abs an. Deteriore ne tui amor. Cavis quousque dormientis ab bonum sit. Pars esse hoc te illinc. Refero terrae es. Oblectamenta erat ecclesia suo vel drachmam ipse tuos.	animi.phUnRDXud4h6J@idoneustempli.com	Emma Robinson	plenis.7mVNPutVDnZhJ1
-60630	Dici ob. Inter caelum tuis in interdum, inlusio hi. Piae pars inprobari praestat dicam, tecum siderum nota et. Iam theatra putare ea dixit suo es sane ea. Voce bonam malim die lux nisi lux.	me.3dhGr1X1d2mhJ@habitisum.com	Michael Harris	dixeris.luM2j1Sud2ZhJ1
-60631	Oneri populi in. Aves os mea ex hos. Eras cogo dixi nominum, dona possint.	desperare.j3h4JD8Uv46Z7@alienotunc.com	Jacob Martin	nuntii.RL64Pv8vuGMmjV
-60632	In filiorum una in. Fortasse conferunt cogitari. Canto vi. Os multiplicius. Iam nutu prohibuisti. Casu mei at.	sero.CQZGpUsU12zzR@itidemme.org	Mia Thompson	flammam.5Qh4Pu8uVg6HRu
-60633	Es re suo. Vestigio nota offeratur. Catervatim talibus aut abs ei disputando e, suspirent. Verbum mel nos molestiam, vos famulatum. Aliam peccator celeritate ei hos stat. E lux. Hae boni. Quo fugam gemitus ad, eum peccator pius recordationem.	tetigi.7s9GPDxUd4ZH7@nimiasolis.org	Alexander Harris	gutture.PXl4r1X1unzzRD
-60634	Bene. Una amo una iacitur en hic vi. Etsi fit. Interpellante tu. Peccatorum sacramento antiqua per grex et, reficiatur. Es es dulcidine o aer ob re. An fuit ab hi. Hac loqueremur mel copiosum falli os affectio, utcumque clamore.	retarder.aEK2PDSVdgMZ7@psalmisaluti.net	Aiden Martinez	adversus.aeLg71X1DNMmRv
-60635	Turpis da sunt.	in.pUF2RdSvdN6Mr@detubi.org	Matthew Garcia	corporis.jvigJvsV1nhHju
-60636	Vide e. Rem aliis o magnam esse dei bibo. Loco erro meretur sapores, retarder, vetare. Inquit. Eis abs dum eliqua vi corporalium verbum decus. Scire meae oboritur vituperare alius scio fac. Os ibi castam ventris cui. Sat liquida vi peccatoris spem.	si.PRsGPVxddGhhR@daturte.com	Zoey Taylor	e.7rsNj18uuGMZPd
-60637	Fueramus concubitu si es. Potu tot mea nosse silva se ne. Vero hi bellum reminiscenti subiugaverant.	a.o18Gr1sVd2HHP@cavisbibendi.com	Ella Thomas	da.QuT2jvsV12Zzpu
-60638	Intraverint at. Oportet vult fluctuo o fit sentio te ut hac. Totius est corporalis ei sic, re secum fueram. Tunc mella desuper at imprimi pars vae. Videndi antris desuper rem sequentes sitis transfigurans voluero. Lineas de peste malis melos. Carne sciunt sed des ubi tu multiplicius diiudicas mel.	placeam.stS4RdsdvGmh7@respicepro.org	Emily Jackson	nolo.XSS47UxVU4hZPd
-60639	Aurium ac.	num.y3e2jUsvVGh6p@talilateat.net	Anthony Davis	sub.Y3qg7v8v14hh71
-60640	Reminiscenti e ait. O delector hi. Te esset pecora iugo nos tot en donum temptat. Ad tempus errans. Vos ea at. Des quo eum qui.	a.8TE2p1xu14zHp@furenscupimus.com	Natalie Martinez	deo.T8w2pUs1UnzMrd
-60641	Aeger. Rei mallem dei essem, si iaceat, tum. Hoc fudi opertis ei conmixta adtendi oculus affectus. Rei si digna. Fratribus.	viam.kJYGJuTuV46MP@quippemaris.org	Charlotte White	infirma.3JY27vtuu26Mp1
-60642	Nihil gaudeam ei delet os bonis non venit, tua. Manet diei.	a.jn0n7usUug6H7@extrafalsum.org	Michael Wilson	e.J40nR1Tdu4hHPU
-60643	Odorem hac adsurgat. Mei generis actionibus ea, magicas, sempiterna. O transcendi ipsas vix cui medice admiratio. Num foras quos detestetur amisi fidelis sum tenacius. Ebrietas.	metum.WPgGR1x1V4M6r@faciatlata.com	Lily White	genuit.wjn271T112ZZjd
-60644	Falsissime. Tam eum vi vi amissum eum hi, est. Praesentiam os nunc reconditae sim aves. Creditarum intellexisse.	viribus.Pin4jDtvvnhh7@sudorismalint.org	David Wilson	o.rin4pDXUV2ZZr1
-60645	Ex adsurgere usque quo melodias amor es. Rei oblectamenta vestigio vanias os infirmior. Ut dari species ego vera dicuntur mutare sim in. Conspectum hos ea sonuerunt. Benedicere. Speculum quaerit pax res tuam inconcussus fiant tu. Os et ut. Des verbo tot meas.	capiamur.Emj7U1sUv26M7@vaecomitum.org	Charlotte Jackson	a.e67pVusDvnmZrV
-60646	Loquor fudi vivunt tuorum se dico. Ad aliis una o ne remota. Immo mea intus nonne, tobis latina, animarum.	re.HCRPuvXvUNHz7@fatemurcetera.net	Ethan Johnson	sacerdos.ZC771D8V12zzRd
-60647	Has de via fuerunt. Illuc. Pleno habitaculum. Coniunctam moveri placuit. Habites dicuntur.	sui.KAjpvVXVuG6zp@diceremnaturae.org	Elizabeth Williams	eum.9Y7R1u81dgzz71
-60648	Quaestio audio conantes avertit attigi.	ad.pwUpV1sV14Hzr@nutuipsa.org	Elijah Brown	ac.JOuJ1vSDu46HjV
-60649	Vi docens quaesisse sim illam est flenda putant, cognosceremus.	e.TyUjuD81dGZhj@sapidaprobet.net	Abigail Davis	tactus.sbV7UvxvuGzzjU
-60650	Sed doleat nonnullius in his eant doce huc. Passim. Percipitur eum ingerantur simus sane infligi. Unum.	inpressit.ndz7UUxV1nzMj@subirelata.org	Avery Miller	alas.gUm7uv8uDNMhjd
-60651	Transeatur. Inmunditiam bona sum re multiplicitas, numquid nescirem. Et deserens eunt lux id cognitus, mare.	gustavi.JR3Pud8VdgmhJ@ianuasonare.com	Chloe Smith	a.PJKJdu8Vv46zRd
-60652	Ingressae lascivos e soli mirum solum iumenti voce. Earum parit amet. Per ita eunt novi meo. Domi sive.	quidam.K33R1u8uVnh6j@totoimmensa.org	Mason Thomas	cognitus.l99711Tddghhp1
-60653	Pulchras. Erigo infirmitas munerum ne qui huc. Respice maior spem sim faciant moderationi videtur noe. Abditis cogitando indica velit. Eligam temptationum habeatur et, prospera viae eripe rem piae. Hanc ex prodest. Oblivio raptae an dum quos.	re.93Fpd18uUg66R@cupiantcura.net	Liam Miller	penetrale.3kijdv8UUGZmJ1
-60654	Mulier. Notus ab te sacerdos ecce nos.	desidero.5QFPuUXu1Nhhj@dain.org	Ethan Thomas	adlapsu.fOIJ11xdd4M6P1
-60655	Est palpa.	aer.ZoS7VVTDU2ZzR@videturvivat.com	Emily Wilson	quae.zqtPvu8dU4MzrU
-60656	Clauditur cohiberi alter equus, hi cito misericordiam laetatus. Omnis est vox sola per bene alii. Fuerunt. Proferatur rebus moveat quam tua.	formosa.2n8p1181D46z7@tuahomo.com	Mia Jones	haurimus.g2Sj1V8uVgmhPU
 \.
 
 
@@ -1939,35 +1868,35 @@ COPY public."Votes" (id, voice, "thread-id", "user-id") FROM stdin;
 -- Name: Forum_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Forum_id_seq"', 15712, true);
+SELECT pg_catalog.setval('public."Forum_id_seq"', 16898, true);
 
 
 --
 -- Name: Post_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Post_id_seq"', 124057, true);
+SELECT pg_catalog.setval('public."Post_id_seq"', 11937998, true);
 
 
 --
 -- Name: Thread_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Thread_id_seq"', 24237, true);
+SELECT pg_catalog.setval('public."Thread_id_seq"', 185396, true);
 
 
 --
 -- Name: Users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Users_id_seq"', 60656, true);
+SELECT pg_catalog.setval('public."Users_id_seq"', 79249, true);
 
 
 --
 -- Name: Votes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Votes_id_seq"', 1147, true);
+SELECT pg_catalog.setval('public."Votes_id_seq"', 1524761, true);
 
 
 --
@@ -2066,10 +1995,52 @@ CREATE UNIQUE INDEX idx_forum_ci_slug ON public."Forums" USING btree (lower((slu
 
 
 --
+-- Name: idx_post_author_id; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_post_author_id ON public."Posts" USING btree ("author-id");
+
+
+--
+-- Name: idx_post_forum_id; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_post_forum_id ON public."Posts" USING btree ("forum-id");
+
+
+--
+-- Name: idx_post_path; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_post_path ON public."Posts" USING btree (path);
+
+
+--
+-- Name: idx_post_thread_id; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_post_thread_id ON public."Posts" USING btree ("thread-id");
+
+
+--
+-- Name: idx_thread_author_id; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_thread_author_id ON public."Threads" USING btree ("author-id");
+
+
+--
 -- Name: idx_thread_ci_slug; Type: INDEX; Schema: public; Owner: maxim
 --
 
 CREATE UNIQUE INDEX idx_thread_ci_slug ON public."Threads" USING btree (lower((slug)::text)) WHERE ((slug)::text <> ''::text);
+
+
+--
+-- Name: idx_thread_forum_id; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_thread_forum_id ON public."Threads" USING btree ("forum-id");
 
 
 --
@@ -2084,6 +2055,20 @@ CREATE UNIQUE INDEX idx_user_email ON public."Users" USING btree (lower((email):
 --
 
 CREATE UNIQUE INDEX idx_user_nickname ON public."Users" USING btree (lower((nickname)::text));
+
+
+--
+-- Name: idx_vote_thread_id; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_vote_thread_id ON public."Votes" USING btree ("thread-id");
+
+
+--
+-- Name: idx_vote_user_id; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_vote_user_id ON public."Votes" USING btree ("user-id");
 
 
 --
