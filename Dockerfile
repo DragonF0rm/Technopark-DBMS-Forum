@@ -39,9 +39,9 @@ RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/$PGSQLVER/main/pg_
 	echo "synchronous_commit = off" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
 	echo "shared_buffers = 256MB" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
 	echo "work_mem = 51MB" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
-	echo "maintence_work_mem = 256MB" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
-	echo "max_fsm_relations = 8" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
-	echo "max_fsm_pages = 16000" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
+	#echo "maintence_work_mem = 256MB" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\ ]
+	#echo "max_fsm_relations = 8" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\      ] НЕ ОПРЕДЕЛЯЮТСЯ КОНФИГОМ
+	#echo "max_fsm_pages = 16000" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\      ]
 	echo "wal_sync_method = fdatasync" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
 	echo "commit_delay = 55" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
 	echo "commit_siblings = 8" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
