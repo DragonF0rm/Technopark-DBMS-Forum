@@ -3,22 +3,12 @@ package forum
 import (
 	"github.com/DragonF0rm/Technopark-DBMS-Forum/database"
 	"github.com/DragonF0rm/Technopark-DBMS-Forum/responses"
-	"github.com/jackc/pgx"
 	"time"
 )
 
 func createThread(slug, title, author, message, threadSlug string, created time.Time)(code int, response interface{}) {
-	/*removeSpaces := func(r rune) rune{
-		if r == ' ' {
-			return '-'
-		} else {
-			return r
-		}
-	}
-	threadSlug := strings.Map(removeSpaces, strings.ToLower(title))*/
-
-	conn, err := pgx.Connect(database.ConnConfig)
-	defer conn.Close()
+	conn, err := database.GetInstance().ConnPool.Acquire()
+	defer database.GetInstance().ConnPool.Release(conn)
 	tx, err := conn.Begin()
 	if err != nil {
 		return responses.InternalError("Error while starting transaction: " + err.Error())

@@ -3,12 +3,11 @@ package forum
 import (
 	"github.com/DragonF0rm/Technopark-DBMS-Forum/database"
 	"github.com/DragonF0rm/Technopark-DBMS-Forum/responses"
-	"github.com/jackc/pgx"
 )
 
 func create(title, user, slug string)(code int, response interface{}) {
-	conn, err := pgx.Connect(database.ConnConfig)
-	defer conn.Close()
+	conn, err := database.GetInstance().ConnPool.Acquire()
+	defer database.GetInstance().ConnPool.Release(conn)
 	tx, err := conn.Begin()
 	if err != nil {
 		return responses.InternalError("Error while starting transaction: " + err.Error())

@@ -27,7 +27,7 @@ var ConnConfig = pgx.ConnConfig {
 
 var poolConfig = pgx.ConnPoolConfig {
 	ConnConfig:     ConnConfig,
-	MaxConnections: 20,
+	MaxConnections: 100,
 	AfterConnect:   afterConnect,
 	AcquireTimeout: 5 * time.Second,
 }

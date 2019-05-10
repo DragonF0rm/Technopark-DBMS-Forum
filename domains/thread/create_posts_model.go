@@ -8,8 +8,8 @@ import (
 )
 
 func createPosts(slugOrID string, parents []int64, authors, messages []string)(code int, response interface{}) {
-	conn, err := pgx.Connect(database.ConnConfig)
-	defer conn.Close()
+	conn, err := database.GetInstance().ConnPool.Acquire()
+	defer database.GetInstance().ConnPool.Release(conn)
 	tx, err := conn.Begin()
 	if err != nil {
 		return responses.InternalError("Error while starting transaction: " + err.Error())

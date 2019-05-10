@@ -8,8 +8,8 @@ import (
 )
 
 func threads(slug string, limit int32, since time.Time, desc bool)(code int, response interface{}) {
-	conn, err := pgx.Connect(database.ConnConfig)
-	defer conn.Close()
+	conn, err := database.GetInstance().ConnPool.Acquire()
+	defer database.GetInstance().ConnPool.Release(conn)
 	tx, err := conn.Begin()
 	if err != nil {
 		return responses.InternalError("Error while starting transaction: " + err.Error())
