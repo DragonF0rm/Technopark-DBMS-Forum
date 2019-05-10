@@ -50,8 +50,8 @@ RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/$PGSQLVER/main/pg_
 	echo "cpu_tuple_cost = 0.001" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
 	echo "cpu_index_tuple_cost = 0.0005" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
 	echo "autovacuum = on" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
-	echo "autovacuum_analyze_threshold = 900" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
-	echo "autovacuum_vacuum_threshold = 1800" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
+	#echo "autovacuum_analyze_threshold = 900" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
+	#echo "autovacuum_vacuum_threshold = 1800" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
 	echo "wal_level = minimal" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf &&\
 	echo "max_wal_senders = 0" >> /etc/postgresql/$PGSQLVER/main/postgresql.conf
 

@@ -2,7 +2,6 @@ package user
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
@@ -11,7 +10,6 @@ import (
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
 	bodyContent, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Println("Error while reading body:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -25,7 +23,6 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(bodyContent, &args)
 	if err != nil {
-		fmt.Println("Error while parsing request:", err)
 		w.WriteHeader(http.StatusInternalServerError)//Возможно, лучше BadRequest
 		return
 	}
@@ -33,7 +30,6 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 	code, response := create(mux.Vars(r)["nickname"], args.Fullname, args.About, args.Email)
 	responseJSON, err := json.Marshal(response)
 	if err != nil {
-		fmt.Println("Error while marshaling response to JSON:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -41,7 +37,6 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(code)
 	_, err = w.Write(responseJSON)
 	if err != nil {
-		fmt.Println("Error while writing response body:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

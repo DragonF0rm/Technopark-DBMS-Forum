@@ -1,7 +1,6 @@
 package thread
 
 import (
-	"fmt"
 	"github.com/DragonF0rm/Technopark-DBMS-Forum/database"
 	"github.com/DragonF0rm/Technopark-DBMS-Forum/responses"
 	"github.com/jackc/pgx"
@@ -47,7 +46,6 @@ func posts(slugOrID string, limit int32, since int64, sort string, desc bool)(co
 	case treeSort:
 		rows, err = tx.Query(`SELECT * FROM func_thread_posts_tree($1, $2, $3, $4)`, id, since, desc, limit)
 	case parentTreeSort:
-		fmt.Println("PARENT TREE:",id, since, desc, limit)
 		rows, err = tx.Query(`SELECT * FROM func_thread_posts_parent_tree($1, $2, $3, $4)`, id, since, desc, limit)
 	}
 	defer rows.Close()
