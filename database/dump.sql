@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.7 (Debian 10.7-1.pgdg90+1)
--- Dumped by pg_dump version 10.7 (Debian 10.7-1.pgdg90+1)
+-- Dumped from database version 10.7 (Ubuntu 10.7-0ubuntu0.18.04.1)
+-- Dumped by pg_dump version 10.7 (Ubuntu 10.7-0ubuntu0.18.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1010,7 +1010,7 @@ BEGIN
         RAISe no_data_found;
     end if;
 
-    SELECT path[2], array_length(path, 1) + 1
+    SELECT (path || id)[2], array_length(path, 1) + 1
     INTO since_root_id, depth
     FROM "Posts"
     WHERE id = arg_since_id;
@@ -1028,7 +1028,6 @@ BEGIN
             AND inner_p."thread-id" = arg_thread_id
             AND CASE
                 when since_root_id IS NULL then true
-                --ELSE (inner_p.path || inner_p.id)[depth] = arg_since_id
                 ELSE CASE
                     WHEN arg_desc THEN inner_p.id < since_root_id
                     ELSE inner_p.id > since_root_id
@@ -1711,6 +1710,7 @@ COPY public."Users" (id, about, email, fullname, nickname) FROM stdin;
 79333	Ambulent ab inimicus per nisi si tu, hi. Si a deo ac bellum. Est ea huc praebens eventa. Nobis reccido malorum ponendi dona dona da os incertum. Mel ait.	alioquin.d465ZGGyjZK6J@sitheatra.com	Daniel Martin	subduntur.U4z5M240rMKzJd
 79335	Tale at iucundiora oleat, ait gaudent. Nepotibus. Diei.	fundum.c5KF6N2yJZKMp@quaerites.org	Aubrey Smith	e.c59F6g2AJZ9mPd
 79336	Tam visionum fama meae. Gustatae interiusque. Nati da his es experimentum toto vide ita, sectatur. Recoleretur ebriosus exemplo audire huc vox, bibendo.	suis.1a3CmgnARHLZ7@inaves.org	Lily Robinson	se.1Y95HgGyJH96ju
+79378	Ei fores vi severitate o diutius. Praesentia vim volebant. Vim erogo faciens. Recordarer vidi quas campis necessarium. Lumen illam dormienti cibum.	transit.PT4sZG4BRmLMj@hasiumenti.com	Lily Taylor	velint.JX2ThN20JM96jd
 79338	Factum dextera suo lateat. Quam illuc fudi illico at. Leges animi e cura, vim a auribus. Aenigmate. Corporalis actiones ulterius nutu, ego sui. De. Tuos an assunt vanae qualibus id mutare.	graventur.XkFFzg20JMKhJ@quaedamhaec.net	Sofia Williams	videam.S3cChG2bj63Mpd
 79339	Desideravit sciri et audiuntur. Rapiunt sequi spectandum cetera omni copiosae huc ex dixit. Traiecta molestiam doce cantilenarum diu canora lingua. Cui fit fabricasti ut o libet, alia. Conspectum reficiatur abundantiore eo omnia de. Venio nam interpellante transire intentioni sui ergo. Potest difficultates tunc diversitate, liquide.	o.3ocih4nAjh96J@transeohae.com	Madison Moore	erro.LQFih44ArMK67u
 79341	Evigilantes refugio rem cor, prius. Se ut elapsum. Vi inpressas meus. Quot displiceant ita. Sonum. Ei. Deo nostrum a tui vituperari. Auri es me possim mei, inpressas invisibiles haeream.	occurrat.WZsFHG4brz9zj@verusinlusio.org	Anthony Smith	quaeque.q6X5ZgNB7636r1
@@ -1739,7 +1739,6 @@ COPY public."Users" (id, about, email, fullname, nickname) FROM stdin;
 79375	Diu latissimos cui. Eos male en. Fletur dei intravi possem es laetus eventa. Contristatur ea. Utrique fecit sero das resisto. Iube noverunt evigilet victor. Donum retinetur vera pars huc ago adhuc. Cohiberi da omnem vi, ac, sacrifico mali dum. Subditi diei inplicaverant bibo se prodeat unus qua artes.	possidere.58Q864gA7m367@amatpopuli.com	Aubrey Moore	ego.f8qs624bJm3zPv
 79376	Mea. Reconditae propinquius ipsum modi. Cernimus curo temptatio da facit sint. Tu. Niteat creatorem tu cur.	suam.1GoSh2g07ZkZ7Z@peccodeo.net	Mason Davis	aer.U2q8m2gYr63ZJL
 79377	Miserabiliter. Approbet refugio palpa humanus. Id alas dico suo, per, plus notiones. Valent. Ad sit rei spe te illico noe ago quadam. Vitaliter re libeat fieri. Abditioribus ore. O an eo tum membra respuitur de. Facio cui deo re, offeretur ad rem.	distantia.Tx0xMn2AjHLzP@quasi.net	Aubrey Thompson	os.w6Bsz440769H7d
-79378	Ei fores vi severitate o diutius. Praesentia vim volebant. Vim erogo faciens. Recordarer vidi quas campis necessarium. Lumen illam dormienti cibum.	transit.PT4sZG4BRmLMj@hasiumenti.com	Lily Taylor	velint.JX2ThN20JM96jd
 79379	Бездельник третьего разряда 😋	ad.1aJez44aPhlmj@vocatursero.com	Маркиз О-де-Колóн	servis.vbJO6nGb763MjU
 79380	Animi tam os iniqua beata. Christus supplicii macula mea, verbis naturam repente si re. Moveat eum mortalitatis. Concubitu gero vi. Alia. Potu de seu eo es, ea amo, thesaurus. Aspero perpetret vae odor nutu. Sperans des sua sine dolorem videam, eo ne.	vana.44UoH24bPH9mJ@aliquodapud.org	Charlotte Brown	da.N4dEm4GyJ6lHrV
 79381	Cotidianas corruptione quaerit me vide, ecclesia re has spernat. Infinitum infirmitate ceterarumque rei valida. Videor num tuo necessitas aut, manifestus ego benedicere, si. Minutissimis volens. Amoenos ac veni. Es voluptatibus promisisti deliciosas beatitudinis piam sit e, tua. Sic posside est en, hos fructum ob vasis. Beati alia.	id.ZJ3WH42a7636R@eantad.net	Matthew Johnson	graeci.mpkQz4NaRZlH7v
