@@ -528,13 +528,15 @@ BEGIN
     FOR rec in SELECT u.nickname, u.fullname, u.about, u.email
         FROM "Users" u
         join (
-            SELECT DISTINCT "author-id" AS id
+            (SELECT DISTINCT "author-id" AS id
             FROM "Threads"
             where "forum-id" = forum_id
+            ORDER BY id)
             UNION
-            SELECT DISTINCT "author-id" AS id
+            (SELECT DISTINCT "author-id" AS id
             FROM "Posts"
             WHERE "forum-id" = forum_id
+            ORDER BY id)
         ) forum_users on forum_users.id = u.id  
         WHERE CASE
             when arg_since is null then true
@@ -1621,9 +1623,6 @@ ALTER TABLE ONLY public."Votes" ALTER COLUMN id SET DEFAULT nextval('public."Vot
 --
 
 COPY public."Forums" (id, posts, slug, threads, title, "user-id") FROM stdin;
-16899	0	cz5R6841koLO8	0	Advertenti una vi id.	79312
-16900	0	RyN9i00_roaiK	0	Ubi respondit erro laudantur nec si voce sim.	79378
-16901	0	1fFI2AEnriLiK	0	Ita inplicaverant non cadavere mallem minutissimis meo arguitur, facultas.	79444
 \.
 
 
@@ -1640,6 +1639,14 @@ COPY public."Posts" (id, "author-id", created, "forum-id", "is-edited", message,
 --
 
 COPY public."Threads" (id, "author-id", created, "forum-id", message, slug, title, votes) FROM stdin;
+\.
+
+
+--
+-- Data for Name: Users; Type: TABLE DATA; Schema: public; Owner: maxim
+--
+
+COPY public."Users" (id, about, email, fullname, nickname) FROM stdin;
 \.
 
 
@@ -1789,6 +1796,13 @@ CREATE INDEX idx_post_author_id ON public."Posts" USING btree ("author-id");
 
 
 --
+-- Name: idx_post_forum_authors; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_post_forum_authors ON public."Posts" USING btree ("forum-id", "author-id");
+
+
+--
 -- Name: idx_post_forum_id; Type: INDEX; Schema: public; Owner: maxim
 --
 
@@ -1828,6 +1842,13 @@ CREATE UNIQUE INDEX idx_thread_ci_slug ON public."Threads" USING btree (lower((s
 --
 
 CREATE INDEX idx_thread_created ON public."Threads" USING btree (created);
+
+
+--
+-- Name: idx_thread_forum_authors; Type: INDEX; Schema: public; Owner: maxim
+--
+
+CREATE INDEX idx_thread_forum_authors ON public."Threads" USING btree ("forum-id", "author-id");
 
 
 --
