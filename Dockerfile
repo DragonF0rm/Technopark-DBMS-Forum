@@ -18,7 +18,9 @@ ENV GOPATH /opt/go
 ENV PATH $GOROOT/bin:$GOPATH/bin:/usr/local/go/bin:$PATH
 
 WORKDIR /server
-COPY . .
+COPY ./archive.zip .
+RUN apt-get install unzip
+RUN unzip archive.zip
 
 RUN cd /server
 RUN go get -u
