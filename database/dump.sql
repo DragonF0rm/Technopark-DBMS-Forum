@@ -1673,35 +1673,35 @@ COPY public."Votes" (id, voice, "thread-id", "user-id") FROM stdin;
 -- Name: Forum_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Forum_id_seq"', 18412, true);
+SELECT pg_catalog.setval('public."Forum_id_seq"', 18452, true);
 
 
 --
 -- Name: Post_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Post_id_seq"', 15178485, true);
+SELECT pg_catalog.setval('public."Post_id_seq"', 18178485, true);
 
 
 --
 -- Name: Thread_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Thread_id_seq"', 297187, true);
+SELECT pg_catalog.setval('public."Thread_id_seq"', 317187, true);
 
 
 --
 -- Name: Users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Users_id_seq"', 94654, true);
+SELECT pg_catalog.setval('public."Users_id_seq"', 96654, true);
 
 
 --
 -- Name: Votes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: maxim
 --
 
-SELECT pg_catalog.setval('public."Votes_id_seq"', 2495627, true);
+SELECT pg_catalog.setval('public."Votes_id_seq"', 2695627, true);
 
 
 --
